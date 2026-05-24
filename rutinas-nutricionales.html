@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Rutinas · Sergio Devece</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F3EE;
+    --dark: #2D2620;
+    --accent: #A67C52;
+    --muted: #6B5C50;
+    --border: #D4C9BC;
+    --card: #FFFFFF;
+    --yellow-bg: #FFF8E7; --yellow-b: #F4B942; --yellow-t: #8B5E04;
+    --green-bg: #F0FFF4;  --green-b: #68D391;  --green-t: #276749;
+    --blue-bg: #EBF8FF;   --blue-b: #63B3ED;   --blue-t: #2C5282;
+    --pink-bg: #FFF0F7;   --pink-b: #F687B3;   --pink-t: #702459;
+    --purple-bg: #F3F0FF; --purple-b: #9F7AEA; --purple-t: #44337A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Lato', sans-serif; color: var(--dark); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: var(--dark);
+    color: #F7F3EE;
+    padding: 24px 20px 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .header-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.45; margin-bottom: 4px; font-family: 'Lato', sans-serif; }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 400; letter-spacing: 0.5px; }
+  .header-sub { font-size: 12px; opacity: 0.55; margin-top: 3px; }
+  .routine-tabs { display: flex; gap: 8px; margin-top: 14px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .routine-tabs::-webkit-scrollbar { display: none; }
+  .rtab {
+    background: rgba(255,255,255,0.1); color: #F7F3EE;
+    border: none; border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; font-family: 'Lato', sans-serif;
+    cursor: pointer; white-space: nowrap; transition: background 0.2s;
+  }
+  .rtab.active { background: var(--accent); }
+
+  /* MAIN */
+  .main { max-width: 680px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* NO CONSUME */
+  .no-consume {
+    background: #FFF3CD; border: 1px solid #F4B942;
+    border-radius: 12px; padding: 10px 16px;
+    margin: 16px 0; font-size: 13px; color: #8B5E04;
+  }
+
+  /* VIEW TABS */
+  .view-tabs {
+    display: flex; gap: 4px; margin: 16px 0;
+    background: #E8E0D8; border-radius: 16px; padding: 4px;
+  }
+  .vtab {
+    flex: 1; background: transparent; color: var(--dark);
+    border: none; border-radius: 12px; padding: 10px 8px;
+    font-size: 13px; font-family: 'Lato', sans-serif;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .vtab.active { background: var(--dark); color: #F7F3EE; }
+
+  /* DAY SELECTOR */
+  .day-selector { display: flex; gap: 6px; margin-bottom: 18px; }
+  .daybtn {
+    flex: 1; background: var(--card); color: var(--dark);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 4px; font-size: 12px; font-family: 'Lato', sans-serif;
+    cursor: pointer; transition: all 0.2s; text-align: center; line-height: 1.4;
+  }
+  .daybtn.active { background: var(--dark); color: #F7F3EE; border-color: transparent; }
+  .daybtn .dot { width: 4px; height: 4px; background: var(--accent); border-radius: 50%; margin: 3px auto 0; }
+
+  /* DAY LABEL */
+  .day-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.45; margin-bottom: 12px; font-family: 'Lato', sans-serif; }
+
+  /* MEAL CARDS */
+  .meal-card { border-radius: 16px; padding: 16px 18px; margin-bottom: 12px; border-width: 1px; border-style: solid; }
+  .meal-card.desayuno { background: var(--yellow-bg); border-color: var(--yellow-b); }
+  .meal-card.almuerzo { background: var(--green-bg); border-color: var(--green-b); }
+  .meal-card.comida   { background: var(--blue-bg);   border-color: var(--blue-b); }
+  .meal-card.merienda { background: var(--pink-bg);   border-color: var(--pink-b); }
+  .meal-card.cena     { background: var(--purple-bg); border-color: var(--purple-b); }
+  .meal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .meal-icon { font-size: 18px; }
+  .meal-name { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'Lato', sans-serif; }
+  .meal-card.desayuno .meal-name { color: var(--yellow-t); }
+  .meal-card.almuerzo .meal-name { color: var(--green-t); }
+  .meal-card.comida   .meal-name { color: var(--blue-t); }
+  .meal-card.merienda .meal-name { color: var(--pink-t); }
+  .meal-card.cena     .meal-name { color: var(--purple-t); }
+  .meal-text { font-size: 15px; line-height: 1.65; color: var(--dark); font-family: 'Lato', sans-serif; font-weight: 300; }
+
+  /* NOTES */
+  .notes-card { background: var(--card); border: 1px solid #E8E0D8; border-radius: 16px; padding: 16px 18px; margin-top: 8px; }
+  .notes-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-family: 'Lato', sans-serif; }
+  .notes-text { font-size: 13px; line-height: 1.75; color: var(--muted); font-weight: 300; }
+
+  /* WEEK VIEW */
+  .week-day { margin-bottom: 22px; }
+  .week-day-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .week-day-badge { background: #D4C9BC; color: var(--dark); border-radius: 8px; padding: 4px 14px; font-size: 13px; font-weight: 700; font-family: 'Lato', sans-serif; }
+  .week-day-badge.today { background: var(--dark); color: #F7F3EE; }
+  .today-label { font-size: 11px; color: var(--accent); letter-spacing: 1px; font-family: 'Lato', sans-serif; }
+  .week-meals { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .week-meals::-webkit-scrollbar { display: none; }
+  .week-meal-card { border-radius: 12px; padding: 10px 14px; min-width: 160px; max-width: 200px; flex-shrink: 0; border-width: 1px; border-style: solid; }
+  .week-meal-card.desayuno { background: var(--yellow-bg); border-color: var(--yellow-b); }
+  .week-meal-card.almuerzo { background: var(--green-bg); border-color: var(--green-b); }
+  .week-meal-card.comida   { background: var(--blue-bg);   border-color: var(--blue-b); }
+  .week-meal-card.merienda { background: var(--pink-bg);   border-color: var(--pink-b); }
+  .week-meal-card.cena     { background: var(--purple-bg); border-color: var(--purple-b); }
+  .week-meal-name { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; font-family: 'Lato', sans-serif; }
+  .week-meal-card.desayuno .week-meal-name { color: var(--yellow-t); }
+  .week-meal-card.almuerzo .week-meal-name { color: var(--green-t); }
+  .week-meal-card.comida   .week-meal-name { color: var(--blue-t); }
+  .week-meal-card.merienda .week-meal-name { color: var(--pink-t); }
+  .week-meal-card.cena     .week-meal-name { color: var(--purple-t); }
+  .week-meal-text { font-size: 12px; line-height: 1.5; color: var(--dark); font-weight: 300; }
+
+  /* SHOPPING */
+  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .shop-info { font-size: 13px; opacity: 0.6; }
+  .clear-btn { background: none; border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 12px; cursor: pointer; color: var(--dark); font-family: 'Lato', sans-serif; }
+  .shop-cat-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #E8E0D8; font-family: 'Lato', sans-serif; }
+  .shop-category { margin-bottom: 20px; }
+  .shop-item { display: flex; align-items: center; gap: 12px; padding: 10px 4px; cursor: pointer; border-bottom: 1px solid #F0EBE4; transition: opacity 0.2s; user-select: none; }
+  .shop-item.checked { opacity: 0.38; }
+  .shop-checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+  .shop-checkbox.checked { border-color: #68D391; background: #68D391; }
+  .shop-checkbox .check { display: none; color: #fff; font-size: 12px; font-weight: 700; }
+  .shop-checkbox.checked .check { display: block; }
+  .shop-item-name { font-size: 15px; font-weight: 300; transition: text-decoration 0.15s; }
+  .shop-item.checked .shop-item-name { text-decoration: line-through; }
+  .shop-summary { background: #E8E0D8; border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+  /* HIDDEN */
+  .view-panel { display: none; }
+  .view-panel.active { display: block; }
+
+  @media (max-width: 400px) {
+    .header-title { font-size: 20px; }
+    .meal-text { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-label">Edelweiss Moyano</div>
+      <div class="header-title">Mis Rutinas</div>
+      <div class="header-sub">Sergio Devece · 5 rutinas</div>
+    </div>
+  </div>
+  <div class="routine-tabs" id="routineTabs"></div>
+</div>
+
+<div class="main">
+  <div class="no-consume" id="noConsume"></div>
+
+  <div class="view-tabs">
+    <button class="vtab active" onclick="setView('day')">📅 Hoy</button>
+    <button class="vtab" onclick="setView('week')">🗓 Semana</button>
+    <button class="vtab" onclick="setView('shop')">🛒 Compra</button>
+  </div>
+
+  <!-- DAY VIEW -->
+  <div class="view-panel active" id="view-day">
+    <div class="day-selector" id="daySel"></div>
+    <div class="day-label" id="dayLabel"></div>
+    <div id="mealCards"></div>
+    <div class="notes-card" id="notesCard" style="display:none">
+      <div class="notes-label">📋 Notas generales</div>
+      <div class="notes-text" id="notesText"></div>
+    </div>
+  </div>
+
+  <!-- WEEK VIEW -->
+  <div class="view-panel" id="view-week">
+    <div id="weekGrid"></div>
+  </div>
+
+  <!-- SHOP VIEW -->
+  <div class="view-panel" id="view-shop">
+    <div class="shop-header">
+      <div class="shop-info" id="shopInfo"></div>
+      <button class="clear-btn" onclick="clearChecked()">Limpiar</button>
+    </div>
+    <div id="shopList"></div>
+    <div class="shop-summary" id="shopSummary"></div>
+  </div>
+</div>
+
+<script>
+const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const DAY_SHORT = ["L","M","X","J","V","S","D"];
+const MEALS = ["desayuno","almuerzo","comida","merienda","cena"];
+const MEAL_LABELS = {desayuno:"Desayuno",almuerzo:"Almuerzo",comida:"Comida",merienda:"Merienda",cena:"Cena"};
+const MEAL_ICONS = {desayuno:"☀️",almuerzo:"🍎",comida:"🍽️",merienda:"🥤",cena:"🌙"};
+
+const CATEGORY_MAP = {
+  "Proteínas": ["Pollo","Salmón","Pavo","Ternera","Gambas","Atún","Pescado","Huevo","Almejas","Ahumado","Bacalao","Merluza","Dorada","Trucha","Lubina","Emperador","Hígado","Lomo","Costillas","Cordero"],
+  "Lácteos": ["Yogurt griego","Yogurt vegetal","Queso de untar","Queso fresco","Mozzarella","Kéfir","Parmesano","Quesito"],
+  "Cereales y semillas": ["Avena","Pan integral","Arroz integral","Fideos integrales","Fajitas integrales","Quinoa","Tahini","Bayas de goji","Chía","Semillas","Pipas","Nueces","Almendras","Anacardos","Pistachos","Avellanas"],
+  "Frutas": ["Manzana","Piña","Mango","Frutos rojos","Banana","Naranja","Aguacate","Papaya","Arándanos","Frambuesas","Kiwi","Pera","Plátano","Melocotón","Higos","Uvas pasas"],
+  "Verduras": ["Tomate","Pimiento","Endivias","Espinacas","Setas","Ajetes","Judías verdes","Batata","Boniato","Calabacín","Champiñones","Rúcula","Patata","Zanahoria","Judía blanca","Berenjena","Brócoli","Coliflor","Alcachofas","Espárragos","Lechuga","Pepino","Cebolla","Maíz","Acelgas","Garbanzos","Lentejas"],
+  "Despensa": ["Jamón","Crema de frutos secos","Jengibre","Cúrcuma","Curry","Miel","Aceite","Pimentón","Orégano","Ágave","Chocolate 90%","Cacao"]
+};
+
+const ROUTINES = {
+  "01 Ago 2024": {
+    noConsume: "Cereales y anguila",
+    days: {
+      Lunes: { desayuno:"Café/té/zumo + huevo revuelto con atún y tomate.", almuerzo:"Tostas de arroz con tahini y plátano.", comida:"Calabacín relleno de atún y cebollino. Puedes hacer una bechamel ligera con harina de maíz y leche de coco. Con especias al gusto.", merienda:"Tostas de maíz de tomate con jamón cocido.", cena:"Filetes de pavo al gusto con alcachofas al horno." },
+      Martes: { desayuno:"Café/té/zumo + yogurt vegetal (alpro de coco) con semillas de chía y papaya.", almuerzo:"Sandwich integral o montadito de queso fresco y pimiento de piquillo.", comida:"Filete de hígado de ternera con judías verdes y patata cocida en ensalada.", merienda:"Melocotón con frambuesas y arándanos.", cena:"Pescado blanco al gusto con berenjenas a la plancha." },
+      Miércoles: { desayuno:"Café/té/zumo + aguacate con jamón, puedes acompañar con tostas de maíz (las redonditas).", almuerzo:"Mezcla de frutos rojos con pipas de girasol y cacao.", comida:"Dorada rellena de rúcula y nueces con ensalada de brotes verdes con tomate y maíz.", merienda:"Kéfir de coco del de beber, mézclalo con piña y un poquito de tahini y pásalo por la batidora a modo smoothie.", cena:"Crema de zanahoria (patata, zanahoria y quesito sin lactosa) con huevo duro y taquitos de jamón." },
+      Jueves: { desayuno:"Café/té/zumo + huevo revuelto con atún y tomate.", almuerzo:"Tostas de arroz con tahini y plátano.", comida:"Quinoa con verduras salteadas (pimiento, calabacín, berenjena) con filetes de pollo a la plancha.", merienda:"Tostas de maíz de tomate con jamón cocido.", cena:"Pescado blanco al gusto con tomate y aguacate." },
+      Viernes: { desayuno:"Café/té/zumo + yogurt vegetal (alpro de coco) con semillas de chía y papaya.", almuerzo:"Sandwich integral o montadito de queso fresco y pimiento de piquillo.", comida:"Trucha/salmón a la plancha con revuelto de espárragos con huevo.", merienda:"Melocotón con frambuesas y arándanos.", cena:"Filete de pollo con coliflor salteada con un ajito." },
+      Sábado: { desayuno:"Café/té/zumo + aguacate con jamón, puedes acompañar con tostas de maíz.", almuerzo:"Mezcla de frutos rojos con pipas de girasol y cacao.", comida:"LIBRE", merienda:"Kéfir de coco con piña y tahini a modo smoothie.", cena:"Pizza trigo sarraceno con tomate natural, queso fresco, rúcula y jamón serrano." },
+      Domingo: { desayuno:"LIBRE", almuerzo:"Tostas de arroz con tahini y plátano.", comida:"Pasta de trigo sarraceno con boloñesa casera (tomate natural, zanahoria, calabacín y carne de pavo). Poca cantidad.", merienda:"Tostas de maíz de tomate con jamón cocido.", cena:"Ensalada de tomate, aguacate, huevo duro y atún." }
+    },
+    notes:"Tras las comidas: yogur vegetal no azucarado (endulzar con miel o ágave), fruta al gusto o té/café. Si se toma tras la cena, esperar 45 min - 1 hora antes de dormir. No superar 3 tazas de café al día. Usar aceites crudos, reducir sal sin eliminarla."
+  },
+  "11 Sep 2024": {
+    noConsume: "Cereales y anguila",
+    days: {
+      Lunes: { desayuno:"Zumo natural/café + porridge de avena con kiwi, higos y mix de pipas (girasol, calabaza, sésamo, anacardos).", almuerzo:"Mango con nueces.", comida:"Lentejas con pollo guisadas. Sofrito con zanahoria, tomate, cebolla y pimiento. Con caldo de carne o vino de guisar.", merienda:"Smoothie de kiwi, naranja y frambuesas con zumo de naranja.", cena:"Brócoli rehogado con ajito y jamón. Pescado blanco al gusto (gallo, lenguado, merluza)." },
+      Martes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan integral con aguacate y aceite de oliva.", almuerzo:"Yogurt natural con avena + kiwi.", comida:"Trucha/lubina al horno con ensalada de pepino, tomate y aguacate. Con patata cocida con aceite y pimentón.", merienda:"Yogurt natural con dátiles, uvas pasas o arándanos deshidratados (sin azúcar añadido) con avellana/almendra o pistachos.", cena:"Tortilla de atún con ensalada de tomate, mozzarella y aguacate." },
+      Miércoles: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tortitas caseras de harina variada (centeno, maíz, mijo, espelta, trigo integral) con tahini y kiwi.", almuerzo:"Pera + almendras.", comida:"Verduras salteadas: berenjena, pimiento, cebolla y zanahoria con filetes de ternera.", merienda:"Macedonia de kiwi y piña con mix de semillas (amapola, sésamo, lino, chía).", cena:"Espárragos trigueros a la plancha con filete de lomo." },
+      Jueves: { desayuno:"Zumo natural/café + porridge de avena con kiwi, higos y mix de pipas (girasol, calabaza, sésamo, anacardos).", almuerzo:"Mango con nueces.", comida:"Guiso de garbanzos con bacalao que lleve acelga. Sofrito sin mucho aceite con buena variación de verduras.", merienda:"Smoothie de kiwi, naranja y frambuesas con zumo de naranja.", cena:"Espinacas/acelgas revueltas con huevo. Filetes de pescado blanco a la plancha." },
+      Viernes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan integral con aguacate y aceite de oliva.", almuerzo:"Yogurt natural con avena + kiwi.", comida:"Emperador a la plancha con boniato al horno. Ensalada de pepino, lechuga y tomate.", merienda:"Yogurt natural con dátiles, uvas pasas o arándanos deshidratados con avellana/almendra o pistachos.", cena:"Caldo de huesos con filetes de pollo y ensalada de brotes verdes." },
+      Sábado: { desayuno:"Zumo natural/café + tortitas caseras de harina variada con tahini y kiwi.", almuerzo:"Pera + almendras.", comida:"LIBRE", merienda:"Macedonia de kiwi y piña con mix de semillas.", cena:"Crema de setas casera (cuece patata, rehoga setas con cebollita, mezcla todo y añade caldo de pollo y tritura) con jamón y huevo duro." },
+      Domingo: { desayuno:"LIBRE", almuerzo:"Mango con nueces.", comida:"Pasta integral/konjac con boloñesa casera (tomate natural, zanahoria, calabacín y carne de ternera triturada).", merienda:"Smoothie de kiwi, naranja y frambuesas con zumo de naranja.", cena:"Fajitas integrales o creps caseros de carne picada de pollo con cebollita, tomate y rúcula." }
+    },
+    notes:"Tras las comidas: yogur vegetal no azucarado (endulzar con miel o ágave), fruta al gusto o té/café. Si se toma tras la cena, esperar 45 min - 1 hora antes de dormir. No superar 3 tazas de café al día. Usar aceites crudos, reducir sal sin eliminarla."
+  },
+  "26 Sep 2024": {
+    noConsume: "Cereales y anguila",
+    days: {
+      Lunes: { desayuno:"Zumo natural/café + porridge de avena con arándanos, papaya y nueces.", almuerzo:"Smoothie verde: manzana verde con piel, aguacate, espinacas baby y yogurt o leche.", comida:"Manitas de cordero (salsita con tomate triturado natural, cebolla, pimiento y zanahoria). Con caldo de huesos o vino.", merienda:"Macedonia de manzana verde y pera con frutos secos al gusto.", cena:"Pescado blanco al gusto con espárragos trigueros con huevo." },
+      Martes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan multicereal con aguacate y jamón.", almuerzo:"Manzana y pera con almendras.", comida:"Pollo al horno con boniato y verduras (pimiento, tomate, calabacín y cebolla). Con caldo de pollo o vino de guisar.", merienda:"Yogurt griego con mix de semillas y piña.", cena:"Sopa de pollo con verduras y huevo duro." },
+      Miércoles: { desayuno:"Zumo natural/café + tortitas de harina de centeno con leche, chía y una pizca de sal. Una vez hechas añadir chocolate 90%, arándanos y papaya.", almuerzo:"Smoothie de piña, kéfir al gusto y kiwi.", comida:"Pasta integral/konjac con pesto casero y pavo. Pesto: frutos secos (nueces, anacardos, cacahuetes) + albahaca o hierbabuena y queso parmesano.", merienda:"Sandwich de queso fresco y tomate.", cena:"Tortilla de queso y pavo (fiambre) con tomates con aceite y sal." },
+      Jueves: { desayuno:"Zumo natural/café + porridge de avena con arándanos, papaya y nueces.", almuerzo:"Smoothie verde: manzana verde con piel, aguacate, espinacas baby y yogurt o leche.", comida:"Patatas guisadas con costillas NO adobadas. Sofrito con tomate natural, zanahoria, pimiento y cebolla. Con caldo de huesos, carne o vino de guisar.", merienda:"Macedonia de manzana verde y pera con frutos secos al gusto.", cena:"Crema de zanahoria y boniato + pescado blanco/azul al gusto." },
+      Viernes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan multicereal con aguacate y jamón.", almuerzo:"Manzana y pera con almendras.", comida:"Dorada o lubina al horno rellena de rúcula, nueces y jamón. Acompañar de ensalada de tomate, patata cocida y pimientos asados.", merienda:"Yogurt griego con mix de semillas y piña.", cena:"Filetes de hígado de ternera al gusto con ensalada de zanahoria, tomate, pepino y rúcula." },
+      Sábado: { desayuno:"Zumo natural/café + tortitas de harina de centeno con leche, chía y pizca de sal. Añadir chocolate 90%, arándanos y papaya.", almuerzo:"Smoothie de piña, kéfir al gusto y kiwi.", comida:"LIBRE", merienda:"Sandwich de queso fresco y tomate.", cena:"Sopa de pollo con verduras y huevo duro. (Hazla para toda la semana)" },
+      Domingo: { desayuno:"LIBRE", almuerzo:"Smoothie verde: manzana verde con piel, aguacate, espinacas baby y yogurt o leche.", comida:"Lasaña de calabacín. En lugar de pasta, planchas de calabacín rellenas de carne picada de cerdo con tomate natural y quesito. Al horno.", merienda:"Macedonia de manzana verde y pera con frutos secos al gusto.", cena:"Ensalada campera de patata, tomate, huevo, maíz y aguacate." }
+    },
+    notes:"Tras las comidas: yogur vegetal no azucarado (endulzar con miel o ágave), fruta al gusto o té/café. Si se toma tras la cena, esperar 45 min - 1 hora antes de dormir. No superar 3 tazas de café al día. Usar aceites crudos, reducir sal sin eliminarla."
+  },
+  "10 Oct 2024": {
+    noConsume: "Cereales y anguila",
+    days: {
+      Lunes: { desayuno:"Café/té/infusión + tostadas de centeno con crema de frutos secos al gusto (anacardos, almendra o cacahuete) con arándanos.", almuerzo:"Yogurt griego + frambuesas con mix de semillas (pipas girasol, calabaza, sésamo, amapola).", comida:"Filetes de pollo con boniato al gusto. Acompañar de ensalada de lechuga con pepino y tomate.", merienda:"Smoothie de naranja, jengibre y piña.", cena:"Pescado blanco (merluza/bacalao/lenguado/gallos) con crema de calabacín." },
+      Martes: { desayuno:"Café/té/infusión + tostada de trigo sarraceno con aceite y aguacate.", almuerzo:"Mango con plátano. Se puede acompañar de café/té o infusión.", comida:"Ensalada de garbanzos con rúcula, tomate, atún y cebolla.", merienda:"Macedonia de arándanos y naranja.", cena:"Pollo (contramuslo/pechuga) al ajillo con ensalada caprese (tomate, queso fresco, orégano, pimienta y aceite)." },
+      Miércoles: { desayuno:"Café/té/infusión + huevos revueltos con tomate con un poquito de sal.", almuerzo:"Macedonia de piña y mango con pipas. Se puede acompañar de café/té o infusión.", comida:"Ensalada de judías verdes (pueden ser de bote) con tomate, cebolla, huevo, patata cocida y atún.", merienda:"Sandwich integral de tomate y pavo.", cena:"Pescado blanco (merluza/bacalao/lenguado/gallos) con puré de patata y calabaza." },
+      Jueves: { desayuno:"Café/té/infusión + tostadas de centeno con crema de frutos secos (anacardos, almendra o cacahuete) con arándanos.", almuerzo:"Yogurt griego + frambuesas con mix de semillas (pipas girasol, calabaza, sésamo, amapola).", comida:"Ensalada de quinoa con pechuga de pollo en dados, quinoa, tomate, aguacate, rúcula y espinacas frescas.", merienda:"Smoothie de naranja, jengibre y piña.", cena:"Tortilla de atún con ensalada de tomate y aguacate." },
+      Viernes: { desayuno:"Café/té/infusión + tostada de trigo sarraceno con aceite y aguacate.", almuerzo:"Mango con plátano. Se puede acompañar de café/té o infusión.", comida:"Ensalada de pepino, tomate, salmón (o pescado graso), aguacate y lechuga.", merienda:"Macedonia de arándanos y naranja.", cena:"Judías verdes rehogadas con jamón con filetes de pavo al gusto." },
+      Sábado: { desayuno:"Café/té/infusión + huevos revueltos con tomate con un poquito de sal.", almuerzo:"Macedonia de piña y mango con pipas.", comida:"LIBRE", merienda:"Sandwich integral de tomate y pavo.", cena:"Pescado blanco (merluza/bacalao/lenguado/gallos) con crema de calabaza." },
+      Domingo: { desayuno:"LIBRE", almuerzo:"Yogurt griego + frambuesas con mix de semillas.", comida:"Pollo con patatas y verduras (calabacín, zanahoria, patata) al horno. Con salsa de vino de guisar o caldo de pollo. Ensalada de tomate, pepino y lechuga.", merienda:"Smoothie de naranja, jengibre y piña.", cena:"Fajitas SIN GLUTEN de aguacate + tomate + jamón serrano." }
+    },
+    notes:"Tras las comidas: yogur vegetal no azucarado (endulzar con miel o ágave), fruta al gusto o té/café. Si se toma tras la cena, esperar 45 min - 1 hora antes de dormir. No superar 3 tazas de café al día. Usar aceites crudos, reducir sal sin eliminarla."
+  },
+  "23 Oct 2024": {
+    noConsume: "Cereales y anguila",
+    days: {
+      Lunes: { desayuno:"Zumo natural/café + porridge de avena con bayas de goji, manzana + crema de frutos secos.", almuerzo:"Yogurt griego + mango y piña.", comida:"Filetes de pollo con pimientos asados. Acompañar de ensalada de endivias aliñadas al gusto.", merienda:"Sandwich de crema de frutos secos al gusto y miel.", cena:"Gambas con champiñones rehogadas." },
+      Martes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan integral tomate y jamón serrano.", almuerzo:"Sandwich integral con crema de frutos secos/tahini o similar.", comida:"Arroz integral con salmón y setas. Con cúrcuma y curry o en guiso.", merienda:"Smoothie verde: espinacas, aguacate, manzana verde, yogurt/leche.", cena:"Rulos de ahumados (pescado ahumado hecho rollito) con rúcula y brotes de soja." },
+      Miércoles: { desayuno:"Zumo natural/café + tostadas integrales con queso de untar light y miel.", almuerzo:"Macedonia de piña + frutos rojos + mango.", comida:"Filetes de pavo al gusto con judías verdes y batata/boniato cocida con aceite y pimentón.", merienda:"Smoothie antiinflamatorio: naranja + jengibre + piña + chía.", cena:"Ensalada de tomate y mozzarella y atún. Aliñada al gusto." },
+      Jueves: { desayuno:"Zumo natural/café + porridge de avena con bayas de goji, manzana + crema de frutos secos.", almuerzo:"Yogurt griego + mango y piña.", comida:"Sopa completa de huesos y pollo con verduras y fideos integrales. Huesos: jamón, blanco y espinazo.", merienda:"Sandwich de crema de frutos secos al gusto y miel.", cena:"Fajitas integrales de pavo con queso fresco. Se puede añadir un poquito de aceite en crudo." },
+      Viernes: { desayuno:"Zumo natural/café (naranja, frutos rojos, banana) + tostada pan integral tomate y jamón serrano.", almuerzo:"Sandwich integral con crema de frutos secos/tahini o similar.", comida:"Salteado de setas y ajetes + filetes de ternera a la plancha con ajo y perejil.", merienda:"Smoothie verde: espinacas, aguacate, manzana verde, yogurt/leche.", cena:"Crema de calabacín con taquitos de jamón y huevo cocido." },
+      Sábado: { desayuno:"Zumo natural/café + tostadas integrales con queso de untar light y miel.", almuerzo:"Macedonia de piña + frutos rojos + mango.", comida:"LIBRE", merienda:"Smoothie: naranja + jengibre + piña + chía.", cena:"Pescado blanco al gusto con ensalada de tomate y aguacate aliñada con orégano y aceite." },
+      Domingo: { desayuno:"LIBRE", almuerzo:"Yogurt griego + mango y piña.", comida:"Guiso de judía blanca con almejas, sofrito de tomate, pimiento y zanahoria. Caldo de pescado (puede ser de brick).", merienda:"Sandwich de crema de frutos secos al gusto y miel.", cena:"Ensalada de patata, huevo, rúcula, tomate y atún." }
+    },
+    notes:"Tras las comidas: yogur vegetal no azucarado (endulzar con miel o ágave), fruta al gusto o té/café. Si se toma tras la cena, esperar 45 min - 1 hora antes de dormir. No superar 3 tazas de café al día. Usar aceites crudos, reducir sal sin eliminarla."
+  }
+};
+
+const jsDay = new Date().getDay();
+const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+const routineKeys = Object.keys(ROUTINES);
+let activeRoutine = routineKeys[routineKeys.length - 1];
+let activeDay = DAYS[todayIdx];
+let currentView = 'day';
+let checked = {};
+
+function init() {
+  renderRoutineTabs();
+  render();
+}
+
+function renderRoutineTabs() {
+  const el = document.getElementById('routineTabs');
+  el.innerHTML = routineKeys.map(k =>
+    `<button class="rtab${k === activeRoutine ? ' active' : ''}" onclick="selectRoutine('${k}')">${k}</button>`
+  ).join('');
+}
+
+function selectRoutine(key) {
+  activeRoutine = key;
+  checked = {};
+  renderRoutineTabs();
+  render();
+}
+
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.vtab').forEach((b, i) => {
+    b.classList.toggle('active', ['day','week','shop'][i] === v);
+  });
+  render();
+}
+
+function setDay(d) {
+  activeDay = d;
+  renderDayView();
+}
+
+function render() {
+  const r = ROUTINES[activeRoutine];
+  document.getElementById('noConsume').innerHTML = r.noConsume
+    ? `<strong>⚠ No consume:</strong> ${r.noConsume}` : '';
+  document.getElementById('noConsume').style.display = r.noConsume ? '' : 'none';
+
+  if (currentView === 'day') renderDayView();
+  else if (currentView === 'week') renderWeekView();
+  else renderShopView();
+}
+
+function renderDayView() {
+  const r = ROUTINES[activeRoutine];
+  // Day selector
+  const ds = document.getElementById('daySel');
+  ds.innerHTML = DAYS.map((d, i) => `
+    <button class="daybtn${d === activeDay ? ' active' : ''}" onclick="setDay('${d}')">
+      ${DAY_SHORT[i]}
+      ${i === todayIdx ? '<div class="dot"></div>' : ''}
+    </button>`).join('');
+
+  // Label
+  document.getElementById('dayLabel').textContent =
+    activeDay + (activeDay === DAYS[todayIdx] ? ' · Hoy' : '');
+
+  // Meals
+  const mc = document.getElementById('mealCards');
+  const day = r.days[activeDay] || {};
+  mc.innerHTML = MEALS.map(m => {
+    const txt = day[m];
+    if (!txt) return '';
+    return `<div class="meal-card ${m}">
+      <div class="meal-header">
+        <span class="meal-icon">${MEAL_ICONS[m]}</span>
+        <span class="meal-name">${MEAL_LABELS[m]}</span>
+      </div>
+      <div class="meal-text">${txt}</div>
+    </div>`;
+  }).join('');
+
+  // Notes
+  const nc = document.getElementById('notesCard');
+  if (r.notes) {
+    document.getElementById('notesText').textContent = r.notes;
+    nc.style.display = '';
+  } else {
+    nc.style.display = 'none';
+  }
+}
+
+function renderWeekView() {
+  const r = ROUTINES[activeRoutine];
+  const wg = document.getElementById('weekGrid');
+  wg.innerHTML = DAYS.map((day, i) => {
+    const isToday = i === todayIdx;
+    const meals = MEALS.map(m => {
+      const txt = r.days[day]?.[m];
+      if (!txt) return '';
+      const short = txt.length > 80 ? txt.slice(0,80) + '…' : txt;
+      return `<div class="week-meal-card ${m}">
+        <div class="week-meal-name">${MEAL_ICONS[m]} ${MEAL_LABELS[m]}</div>
+        <div class="week-meal-text">${short}</div>
+      </div>`;
+    }).join('');
+    return `<div class="week-day">
+      <div class="week-day-header">
+        <div class="week-day-badge${isToday ? ' today' : ''}">${day}</div>
+        ${isToday ? '<span class="today-label">HOY</span>' : ''}
+      </div>
+      <div class="week-meals">${meals}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderShopView() {
+  const r = ROUTINES[activeRoutine];
+  const found = new Set();
+  const allKw = Object.values(CATEGORY_MAP).flat();
+  Object.values(r.days).forEach(day =>
+    Object.values(day).forEach(txt => {
+      const low = txt.toLowerCase();
+      allKw.forEach(k => { if (low.includes(k.toLowerCase())) found.add(k); });
+    })
+  );
+  const items = Array.from(found).sort();
+  const total = items.length;
+  const doneCount = items.filter(i => checked[i]).length;
+
+  document.getElementById('shopInfo').textContent = `Lista para la semana · ${activeRoutine}`;
+  document.getElementById('shopSummary').textContent = `${doneCount} de ${total} artículos marcados`;
+
+  // Categorize
+  const cats = {};
+  items.forEach(item => {
+    let placed = false;
+    for (const [cat, list] of Object.entries(CATEGORY_MAP)) {
+      if (list.some(l => l.toLowerCase() === item.toLowerCase())) {
+        if (!cats[cat]) cats[cat] = [];
+        cats[cat].push(item); placed = true; break;
+      }
+    }
+    if (!placed) { if (!cats['Otros']) cats['Otros'] = []; cats['Otros'].push(item); }
+  });
+
+  const sl = document.getElementById('shopList');
+  sl.innerHTML = Object.entries(cats).map(([cat, citems]) =>
+    `<div class="shop-category">
+      <div class="shop-cat-label">${cat}</div>
+      ${citems.map(item => `
+        <div class="shop-item${checked[item] ? ' checked' : ''}" onclick="toggleItem('${item}')">
+          <div class="shop-checkbox${checked[item] ? ' checked' : ''}">
+            <span class="check">✓</span>
+          </div>
+          <span class="shop-item-name">${item}</span>
+        </div>`).join('')}
+    </div>`
+  ).join('');
+}
+
+function toggleItem(item) {
+  checked[item] = !checked[item];
+  renderShopView();
+}
+
+function clearChecked() {
+  checked = {};
+  renderShopView();
+}
+
+init();
+</script>
+</body>
+</html>
